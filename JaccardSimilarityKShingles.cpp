@@ -56,6 +56,7 @@ class JaccardSimilarityKShingles {
 };
 
 void kShingles(vector<string>& starterDocument, unordered_set<string>& document, int k) {
+	if (k > starterDocument.size()) error("La k no pot ser major que el nombre de paraules del document");
     for (int i=0; i < starterDocument.size() - k + 1; ++i) {
     	string s;
     	for (int j=i; j < i + k; ++j) {
