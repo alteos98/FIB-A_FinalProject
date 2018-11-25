@@ -4,7 +4,7 @@
 #include <vector>
 #include <fstream>
 
-#include "inputOutput.h"
+#include "Headers/inputOutput.h"
 
 using namespace std;
 
@@ -12,21 +12,28 @@ class JaccardSimilarityKShingles {
 	private:
 		unordered_set<string> documentA;
 		unordered_set<string> documentB;
+		int k;
 		double jaccardSimilarity;
 	
 	public:
 		JaccardSimilarityKShingles() {
+			k = 0;
 			jaccardSimilarity = 0.0;
 		}
 		
-		JaccardSimilarityKShingles(unordered_set<string> documentA, unordered_set<string> documentB) {
+		JaccardSimilarityKShingles(unordered_set<string> documentA, unordered_set<string> documentB, int k) {
 			this->documentA = documentA;
 			this->documentB = documentB;
+			this->k = k;
 			jaccardSimilarity = 0.0;
 		}
 		
 		double getJaccardSimilarity() {
 			return this->jaccardSimilarity;
+		}
+		
+		int getK() {
+			return this->k;
 		}
 		
 		void algorithm() {
@@ -68,20 +75,21 @@ void kShingles(vector<string>& starterDocument, unordered_set<string>& document,
 }
 
 void write(JaccardSimilarityKShingles p) {
-	cout << "El valor de la similitud de Jaccard obtingut: " << p.getJaccardSimilarity() << endl;
+	cout << "El valor de la similitud de Jaccard obtingut amb k = " << p.getK() << ": " << p.getJaccardSimilarity() << endl;
 }
 
 int main(int argc, char* argv[]) {
-	if (argc != 3) usage();
+	if (argc != 4) usageJaccardSimilarityKShingles();
 	
-	int k; vector<string> starterDocumentA, starterDocumentB;
-	cout << "Entra el valor de k:" << endl; cin >> k;
+	vector<string> starterDocumentA, starterDocumentB; int k = atoi(argv[3]);
 	
 	read(argv[1], argv[2], starterDocumentA, starterDocumentB);
 	
 	unordered_set<string> documentA, documentB;
 	kShingles(starterDocumentA, documentA, k); kShingles(starterDocumentB, documentB, k);
-	JaccardSimilarityKShingles p(documentA, documentB);
+	JaccardSimilarityKShingles p(documentA, documentB, k);
+	
+	// Timing
 	p.algorithm();
 	
 	write(p);
