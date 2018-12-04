@@ -47,7 +47,7 @@ void read(char* path1, char* path2, vector<string>& starterDocumentA, vector<str
 
 void printVector(vector<string>& v) {
 	cout << v[0];
-	for (int i=1; i < v.size(); ++i) {
+	for (unsigned int i=1; i < v.size(); ++i) {
 		cout << " " << v[i];
 	}
 	cout << endl;
