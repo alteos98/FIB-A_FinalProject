@@ -80,13 +80,6 @@ void write(JaccardSimilarityKShingles p) {
 	cout << "El valor de la similitud de Jaccard obtingut amb k = " << p.getK() << ": " << p.getJaccardSimilarity() << endl;
 }
 
-void calculateTime(clock_t start, clock_t end) {
-	clock_t clockTicks = end - start;
-	double finalTime = 1000 * clockTicks / (double)CLOCKS_PER_SEC; ;
-	//cout.precision(10);
-	cout << "Temps del calcul: " << finalTime << " ms" << endl;
-}
-
 int main(int argc, char* argv[]) {
 	if (argc != 4) usageJaccardSimilarityKShingles();
 	

@@ -59,3 +59,10 @@ void printUnorderedSet(unordered_set<string>& set) {
 	}
 	cout << endl;
 }
+
+void calculateTime(clock_t start, clock_t end) {
+	clock_t clockTicks = end - start;
+	double finalTime = 1000 * clockTicks / (double)CLOCKS_PER_SEC; ;
+	//cout.precision(10);
+	cout << "Temps del calcul: " << finalTime << " ms" << endl;
+}
