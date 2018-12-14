@@ -1,8 +1,10 @@
 #include <iostream>
+#include <cstdio>
 #include <string>
 #include <unordered_set>
 #include <vector>
 #include <fstream>
+#include <ctime>
 
 #include "Headers/inputOutput.h"
 
@@ -78,6 +80,13 @@ void write(JaccardSimilarityKShingles p) {
 	cout << "El valor de la similitud de Jaccard obtingut amb k = " << p.getK() << ": " << p.getJaccardSimilarity() << endl;
 }
 
+void calculateTime(clock_t start, clock_t end) {
+	clock_t clockTicks = end - start;
+	double finalTime = 1000 * clockTicks / (double)CLOCKS_PER_SEC; ;
+	//cout.precision(10);
+	cout << "Temps del calcul: " << finalTime << " ms" << endl;
+}
+
 int main(int argc, char* argv[]) {
 	if (argc != 4) usageJaccardSimilarityKShingles();
 	
@@ -89,9 +98,11 @@ int main(int argc, char* argv[]) {
 	kShingles(starterDocumentA, documentA, k); kShingles(starterDocumentB, documentB, k);
 	JaccardSimilarityKShingles p(documentA, documentB, k);
 	
-	// Timing
+	clock_t start = clock();
 	p.algorithm();
+	clock_t end = clock();
 	
 	write(p);
+	calculateTime(start, end);
 	return 0;
 }
