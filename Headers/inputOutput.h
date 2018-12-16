@@ -20,6 +20,25 @@ void error(string message) {
 	exit(1);
 }
 
+vector<string> read1doc(char* path1) {
+	ifstream fileA;
+
+	// Obrir primer fitxer
+    fileA.open(path1);
+    if (not fileA.is_open()) error("El fitxer no existeix");
+    
+    // Llegir
+    vector<string> starterDocumentA;
+    string x;
+    while (fileA >> x) {
+    	starterDocumentA.push_back(x);
+	}
+    
+    // Tancar
+    fileA.close();
+	return starterDocumentA;
+}
+
 void read(char* path1, char* path2, vector<string>& starterDocumentA, vector<string>& starterDocumentB) {
 	ifstream fileA, fileB;
 
