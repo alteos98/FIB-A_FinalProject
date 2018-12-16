@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <numeric>
 #include <climits>
+#include <ctime>
 
 #include "Headers/inputOutput.h"
 
@@ -145,20 +146,20 @@ double JaccardMinhashApproximation(vector<string> document_A, vector<string> doc
 
 
 	for (unsigned int i=0; i<i_doc_union; i++) {
-		int hash_values[t];
+		unsigned int hash_values[t];
 		for (unsigned int j=0; j<t; j++) {
 			hash_values[j] = (coeffs_A[j]*i + coeffs_B[j]) % c;
 		}
 		#if DEBUG
-		cout << "hash_values, iteration " << i << endl;
-		for (unsigned int z=0; z<t; z++) {
-			printf("%d ", hash_values[z]);
-		}
-		cout << endl;
+		// cout << "hash_values, iteration " << i << endl;
+		// for (unsigned int z=0; z<t; z++) {
+		// 	printf("%d ", hash_values[z]);
+		// }
+		// cout << endl;
 		#endif
 
 		for (unsigned int c=0; c<2; c++) {
-			if (characteristic_matrix[i][c] > 0) {
+			if (characteristic_matrix[i][c] == 1) {
 				for (unsigned int j=0; j<t; j++) {
 					if (signature_matrix[j][c] > hash_values[j])
 						signature_matrix[j][c] = hash_values[j];
@@ -193,8 +194,12 @@ int main(int argc, char* argv[]) {
 	read(argv[1], argv[2], starterDocumentA, starterDocumentB);
 	unsigned int t = atoi(argv[3]);
 
-	double similarity = JaccardMinhashApproximation(starterDocumentA, starterDocumentB, t);
 
+	clock_t start = clock();
+	double similarity = JaccardMinhashApproximation(starterDocumentA, starterDocumentB, t);
+	clock_t end = clock();
+	
+	calculateTime(start, end);
 	printf("Similarity approximation: %f\n", similarity);
 	
 	return 0;
