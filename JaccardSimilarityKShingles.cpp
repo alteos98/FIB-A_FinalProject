@@ -64,11 +64,11 @@ class JaccardSimilarityKShingles {
 	
 };
 
-void kShingles(vector<string>& starterDocument, unordered_set<string>& document, int k) {
+void kShingles(vector<string>& starterDocument, unordered_set<string>& document, unsigned int k) {
 	if (k > starterDocument.size()) error("La k no pot ser major que el nombre de paraules del document");
-    for (int i=0; i < starterDocument.size() - k + 1; ++i) {
+    for (unsigned int i=0; i < starterDocument.size() - k + 1; ++i) {
     	string s;
-    	for (int j=i; j < i + k; ++j) {
+    	for (unsigned int j=i; j < i + k; ++j) {
     		if (i == j) s = starterDocument[j];
     		else s += " " + starterDocument[j];
 		}
@@ -83,7 +83,7 @@ void write(JaccardSimilarityKShingles p) {
 int main(int argc, char* argv[]) {
 	if (argc != 4) usageJaccardSimilarityKShingles();
 	
-	vector<string> starterDocumentA, starterDocumentB; int k = atoi(argv[3]);
+	vector<string> starterDocumentA, starterDocumentB; unsigned int k = atoi(argv[3]);
 	
 	read(argv[1], argv[2], starterDocumentA, starterDocumentB);
 	
