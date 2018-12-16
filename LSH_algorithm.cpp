@@ -15,8 +15,8 @@ void usage() {
 	cout << "	arg0 -> prog" << endl;
 	cout << "	arg1 -> k size of shingles" << endl;
 	cout << "	arg2 -> t hash functions" << endl;
-	cout << "	arg3 -> hash table size n" << endl;
-    cout << "	arg4 -> b bands in LSH" << endl;
+	cout << "	arg3 -> b bands in LSH" << endl;
+	cout << "	arg4 -> n documents" << endl;
 	cout << "	arg5 -> path document 1" << endl;
 	cout << "	arg6 -> path document 2" << endl;
 	cout << "	argn+7 -> path document n" << endl;
@@ -35,6 +35,29 @@ template <> struct hash<std::pair<int, int>> {
 
 //Funcio pel sort
 bool comp(string i,string j) { return (i<j); }
+
+bool isPrime(int num) {
+	int i, count = 0;
+    if (num == 0)
+    {
+		return true;
+    }
+    else  {
+		for(i=2; i < num; i++)
+			if (num % i == 0)
+				count++;
+    }
+    if (count > 1)
+ 	    return false;
+    else
+        return true;
+}
+
+unsigned int findNextPrime(unsigned int num) {
+	for (unsigned int i=num+1; i<2*num; i++)
+		if (isPrime(i))
+			return i;
+}
 
 //Descompon el starterDocument en k-shingles i posa el resultat a document
 void kShingles(vector<string>& starterDocument, vector<string>& document, unsigned int k) {
@@ -101,9 +124,10 @@ vector<vector<int> > ConstructSignature(vector<vector<string> > documents, unsig
 	
 	unsigned int i_doc_union = doc_union.size();
 	int n_docs = documents.size();
-	init_coeffs(coeffs_A, i_doc_union+1);									//Inicialitzem funcions hash
-	init_coeffs(coeffs_B, i_doc_union+1);
+	init_coeffs(coeffs_A, i_doc_union);										//Inicialitzem funcions hash
+	init_coeffs(coeffs_B, i_doc_union);
 
+	unsigned int m = findNextPrime(i_doc_union);							//Busquem el seguent nombre primer per la taula de hash
 	vector<vector<int> > signature_matrix(t,vector<int>(n_docs));
 	
 	for (unsigned int i=0; i<t; i++){										//Inicialitzem la signature matrix amb un valor elevat
@@ -115,7 +139,7 @@ vector<vector<int> > ConstructSignature(vector<vector<string> > documents, unsig
 	for (unsigned int i=0; i<i_doc_union; i++) {							//Per cada fila de la characteristic matrix
 		int hash_values[t];
 		for (unsigned int j=0; j<t; j++) {									//li donem un valor de hashing per les t funcions de hash i d aquesta manera simulem les permutacions de files
-			hash_values[j] = (coeffs_A[j]*(i+1) + coeffs_B[j])%(i_doc_union+1);
+			hash_values[j] = (coeffs_A[j]*(i+1) + coeffs_B[j])%m;
 		}
 
 		for (int c=0; c<n_docs; c++) {										//Apliquem el minhash
@@ -138,18 +162,18 @@ vector<vector<double> > finding_candidates(vector<vector<int> > signature, unord
 	for(int i = 0; i < b; ++i) {											//Iterem per bandes
 		for(int j = 0; j+1 < n_docs; ++j) {									//Iterem per columnes
 			for(int k = j+1; k < n_docs ; ++k) {							//Iterem sobre les columnes de la dreta de la columna j
-				bool dif = false;
-				int m = signature.size()/b;
-				for(int l = 0; l < m and not dif; ++l) {					//Iterem per les files de la banda
-					if(signature[l+(r*i)][j] != signature[l+(r*i)][k]) {	//Si alguna fila de la banda es diferent parem 
-						dif = true;
+				pair<int,int> aux = {j,k};
+					bool dif = false;
+					int m = signature.size()/b;
+					for(int l = 0; l < m and not dif; ++l) {					//Iterem per les files de la banda
+						if(signature[l+(r*i)][j] != signature[l+(r*i)][k]) {	//Si alguna fila de la banda es diferent parem 
+							dif = true;
+						}
 					}
-				}
-				if(not dif) {												//Si hem trobat parell candidat
-					pair<int,int> aux = {j,k};
-					candidates.insert(aux);									
-					similarity[j][k]+= r/t;									//Sumem la similitud a la taula
-				}
+					if(not dif) {												//Si hem trobat parell candidat
+						candidates.insert(aux);									
+						similarity[j][k]+= r/t;									//Sumem la similitud a la taula
+					}
 			}
 		}
 	}
